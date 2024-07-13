@@ -68,30 +68,21 @@ def main() -> None:
     """GraphNeTI3Deployer Example."""
     # configure input files, output folders and pulsemap
     pulsemap = "SplitInIcePulses"
-    input_folders = [f"/groups/icecube/cjb924/workspace/work/i3_deployment/test_data"] #Change this to i3 files directory #change!
+    input_folders = [f"INPUT DIRECTORY"] #Change this to i3 files directory #change!
     
-    model_config_LE = f"/groups/icecube/cjb924/workspace/work/i3_deployment/files_for_use/models_and_config/LE_pid_multiclassification.yml" #Model configs
-    state_dict_LE = f"/groups/icecube/cjb924/workspace/work/i3_deployment/files_for_use/models_and_config/LE_pid_multiclassification_state_dict.pth" #State_dicts for models
+    model_config_LE = f"CONFIGS FOR LOW-ENERGY MODEL" #Model configs
+    state_dict_LE = f"STATE DICT FOR LOW-ENERGY MODEL" #State_dicts for models
     
-    # model_config_HE = f"/groups/icecube/cjb924/workspace/work/i3_deployment/files_for_use/HE_pid_multiclassification.yml" #Model configs
-    # state_dict_HE = f"/groups/icecube/cjb924/workspace/work/i3_deployment/files_for_use/HE_pid_multiclassification_state_dict.pth" #State_dicts for models
+
     
-    model_config_HE = f"/groups/icecube/cjb924/workspace/work/i3_deployment/files_for_use/models_and_config/config.yml" #Model configs
-    state_dict_HE = f"/groups/icecube/cjb924/workspace/work/i3_deployment/files_for_use/models_and_config/_test_set_state_dict.pth" #State_dicts for models
+    model_config_HE = f"CONFIGS FOR HIGH-ENERGY MODEL" #Model configs
+    state_dict_HE = f"STATE DICT FOR HIGH-ENERGY MODEL" #State_dicts for models
     
-    output_folder = f"/groups/icecube/cjb924/workspace/work/i3_deployment/results_LE_only" #Output folder path
+    output_folder = f"OUTPUT DIRECTORY" #Output folder path
     
-    #gcd_file = f"/groups/icecube/cjb924/workspace/work/i3_deployment/test_data/Level2_IC86.2021_data_Run00136124_0101_81_647_GCD.i3.zst" #i3 files #Question???                     #CHECK
     gcd_file = f"{gcd_file}"
     i3_file = f"{i3_file}"
     
-    #input_files = []
-    #for folder in input_folders:
-    #    print('File in for loop', folder)
-    #    input_files.extend(glob(join(folder, "*.i3.zst")))
-    #    print('Checking filename')
-    #    input_files = [file for file in input_files if not fnmatch.fnmatch(file, '*_IT.i3.zst')] #Test                                                                              #CHECK
-    #    input_files = [file for file in input_files if not fnmatch.fnmatch(file, '*_GCD.i3.zst')] #Test                                                                             #CHECK
 
 
     print('For loop done')
@@ -100,7 +91,6 @@ def main() -> None:
     deployment_module_LE = I3InferenceModule(
         pulsemap=pulsemap,
         features=features,
-        #pulsemap_extractor=I3FeatureExtractorIceCubeUpgrade(pulsemap=pulsemap),
         pulsemap_extractor=I3FeatureExtractorIceCubeDeepCore(pulsemap=pulsemap),
         model_config=model_config_LE,
         state_dict=state_dict_LE,
@@ -109,24 +99,24 @@ def main() -> None:
         model_name="deployment",
     )
     
-    #deployment_module_HE = I3InferenceModule(
-    #    pulsemap=pulsemap,
-    #    features=features,
-    #    #pulsemap_extractor=I3FeatureExtractorIceCubeUpgrade(pulsemap=pulsemap),
-    #    pulsemap_extractor=I3FeatureExtractorIceCubeDeepCore(pulsemap=pulsemap),
-    #    model_config=model_config_HE,
-    #    state_dict=state_dict_HE,
-    #    gcd_file=gcd_file,
-    #    #prediction_columns=["pid_muon_pred_HE", "pid_neutrino_pred_HE"],
-    #    prediction_columns=["5_model_pid_noise_pred", "5_model_pid_neutrino_pred_LE", "5_model_pid_neutrino_pred_HE", "5_model_pid_muon_pred_LE", "5_model_pid_muon_pred_HE"],
-    #    model_name="deployment",
-    #)
+    deployment_module_HE = I3InferenceModule(
+        pulsemap=pulsemap,
+        features=features,
+        #pulsemap_extractor=I3FeatureExtractorIceCubeUpgrade(pulsemap=pulsemap),
+        pulsemap_extractor=I3FeatureExtractorIceCubeDeepCore(pulsemap=pulsemap),
+        model_config=model_config_HE,
+        state_dict=state_dict_HE,
+        gcd_file=gcd_file,
+        #prediction_columns=["pid_muon_pred_HE", "pid_neutrino_pred_HE"],
+        prediction_columns=["5_model_pid_noise_pred", "5_model_pid_neutrino_pred_LE", "5_model_pid_neutrino_pred_HE", "5_model_pid_muon_pred_LE", "5_model_pid_muon_pred_HE"],
+        model_name="deployment",
+    )
     
     
     print('Defining deployer')
     # Construct I3 deployer
     deployer = GraphNeTI3Deployer(
-        graphnet_modules=[deployment_module_LE],#, deployment_module_HE],#, filter],
+        graphnet_modules=[deployment_module_LE, deployment_module_HE],
         n_workers=1,
         gcd_file=gcd_file,
     )
