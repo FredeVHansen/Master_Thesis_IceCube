@@ -41,8 +41,8 @@ def main_icecube86(backend: str) -> None:
     # Check(s)
     assert backend in CONVERTER_CLASS
 
-    inputs = [f"/groups/icecube/cjb924/workspace/work/i3_deployment/test_convert"]
-    outdir = f"/groups/icecube/cjb924/workspace/work/i3_deployment/results_converted_i3_files"
+    inputs = [f"IINPUT DIRECTORY"]
+    outdir = f"OUTPUT DIRECTORY"
 
     converter: DataConverter = CONVERTER_CLASS[backend](
         [
